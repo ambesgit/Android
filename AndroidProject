@@ -1,0 +1,397 @@
+ackage com.example.ambes.briantest.UI;
+
+import android.app.*;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Trace;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.*;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.ambes.briantest.R;
+import com.example.ambes.briantest.asynchTask.ReadData;
+import com.example.ambes.briantest.asynchTask.WriteData;
+import com.example.ambes.briantest.choices.ChoiceObject;
+import com.example.ambes.briantest.questions.QuestionObject;
+import com.example.ambes.briantest.util.ChapterChange;
+import com.example.ambes.briantest.util.CheckTextLength;
+
+import java.util.Arrays;
+import java.util.Set;
+
+
+public class MainActivity extends Activity implements
+        AdapterView.OnItemClickListener,
+        CheckBoxFragment.OnFragmentInteractionListener,
+        RadioFragment.OnFragmentInteractionListener,
+        QuestionDisplay.OnFragmentInteractionListener{
+    //--------------------------------------------------------------------------------------------
+    private static ActionBar mActionBar;
+    public static int mConf=0;
+    //--------------------------------------------------------------------------------------------
+    private DrawerLayout mDrawerLayout;
+    private ListView mListView;
+
+    //----------------------------------------------------------------------------------------------
+    //this mChapter array is populated from the res string-array xml file
+    private String[] mChapters;
+    private static int mCurrentChapter=1;
+    public static int mCountQuestionsPerChapter=0;
+
+    public static int getCurrentChapter(){
+        return mCurrentChapter;
+    }
+    public void setmCurrentChapter(int chapter){
+        mCurrentChapter=chapter;
+        setmEntry(0);
+    }
+    //---------------------------------------------------------------------------------------------
+    private static int mEntry=0;
+    public static int getmEntry() {
+        return mEntry;
+    }
+
+    public static void setmEntry(int m) {
+        if(m>=0 && m<mCountQuestionsPerChapter) {
+            MainActivity.mEntry = m;
+        }
+        else if(m==mCountQuestionsPerChapter){
+            MainActivity.mEntry=mCountQuestionsPerChapter-1;
+        }
+        else if(m<0){
+            MainActivity.mEntry=-1;
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+    //private ActionBarDrawerToggle mDrawerToggleListener;
+    public static RadioFragment mRadioFragment;
+    public static CheckBoxFragment mCheckFragment;
+    public static QuestionDisplay mQuestionFragment;
+    private FragmentManager mFmanager;
+    private FragmentTransaction mFtransaction;
+    private View mView;
+    //this flag will make the layout to load radio or check(1 or 0)
+    private int mQuestionFlag=1;
+    private Set<String> mQuestions=null;
+    //--------------------------------------------------------------------------------------------
+    private static QuestionObject mQuestionsFromDatabase=QuestionObject.getQuestionObject();
+    private static ChoiceObject mChoicesFromDatabase= ChoiceObject.getChoiceObject();
+    public static QuestionObject getQuestionsFromDatabase(){
+        return mQuestionsFromDatabase;
+
+        }
+    public static ChoiceObject getChoicesFromDatabase() {
+        return mChoicesFromDatabase;
+    }
+
+    //--------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_drawer);
+        mChapters=getResources().getStringArray(R.array.chapters);
+        mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        mListView=(ListView)findViewById(R.id.list);
+        mListView.setOnItemClickListener(this);
+
+        //enable the action bar to be hignlighted
+        //getMActionBar().setHomeButtonEnabled(true);
+        //set directional arraw for navigation
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setElevation(05);
+        //getSupportActionBar().setIcon(R.drawable.drawerbar);
+        //getSupportActionBar().setLogo(R.drawable.drawerbar);
+        //----------------------------------------------------
+        //--------------------------------------------------
+        mRadioFragment = new RadioFragment();
+        mCheckFragment = new CheckBoxFragment();
+        mQuestionFragment = new QuestionDisplay();
+
+        //create fragment of the radio button
+        mFmanager = getFragmentManager();
+        mFtransaction = mFmanager.beginTransaction();
+        //------------------------------------------------------
+        if(savedInstanceState==null && QuestionObject.QUESTIONS.size()==0) {
+            WriteData writeData = new WriteData(this);
+            writeData.execute();
+            //--------------------------------------------------
+
+            ReadData task = new ReadData(this);
+            task.execute();
+
+            if (!mQuestionFragment.isInLayout()) {
+                mFtransaction.add(R.id.question, mQuestionFragment);
+            }
+            if (!mRadioFragment.isInLayout()) {
+                if (mCheckFragment.isInLayout()) {
+                    mFtransaction.remove(mCheckFragment);
+                }
+                mFtransaction.add(R.id.sharedview, mRadioFragment).commit();
+            }
+        }
+
+        //----------------------------------------------------------------
+            if(savedInstanceState!=null) {
+                setmCurrentChapter(savedInstanceState.getInt("currentChapter"));
+                mCountQuestionsPerChapter = savedInstanceState.getInt("totalQuestionsOfchapter");
+                setmCurrentChapter(savedInstanceState.getInt("currentIndex"));
+
+
+            }
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save parameters like array index or some thing like that as key value pair outSatet.put("key","value")
+        outState.putInt("ambasager",1);
+        outState.putInt("currentChapter", mCurrentChapter);
+        outState.putInt("totalQuestionsOfChapter", mCountQuestionsPerChapter);
+        outState.putInt("currentIndex", getmEntry());
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Toast.makeText(this, " " + mCountQuestionsPerChapter + " " + mCurrentChapter, Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+    //-------------------------------------------------------------------------------------------------
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
+            mConf=1;
+        }
+    }
+//-------------------------------------------------------------------------------------------------
+        //here is where the chapter is chaned and the number questions per chapter is counting
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        getSelectedItem(position);
+
+    }
+    public void getSelectedItem(int pos){
+        setmCurrentChapter(pos + 1);
+        ReadData task = new ReadData(this);
+        task.execute();
+            //rest the variable here
+            mCountQuestionsPerChapter = 0;
+            mListView.setItemChecked(pos, true);
+            for (int i = 0; i < QuestionObject.CHAPTER.size(); i++) {
+                if ((int) QuestionObject.CHAPTER.get(i) == getCurrentChapter()) {
+                    mCountQuestionsPerChapter += 1;
+                }
+
+            }
+        setmEntry(-1);
+    }
+
+    public void setTitle(String title){
+       // getSupportActionBar().setTitle(title.toUpperCase());
+    }
+//-----------------------------------------------------------------------------------------------
+    public static void giveMeCurrentChapter(){
+            //rest the variable here
+            MainActivity.mCountQuestionsPerChapter = 0;
+
+            for (int i = 0; i < QuestionObject.CHAPTER.size(); i++) {
+                if ((int) QuestionObject.CHAPTER.get(i) == MainActivity.getCurrentChapter()) {
+                   MainActivity.mCountQuestionsPerChapter += 1;
+                }
+        }
+    }
+//------------------------------------------------------------------------------------------------
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    //this method is a base control for all the fragments
+    @Override
+    public void getCurrentQuestion(int number,int flag) {
+        int checkConsistency=0;
+        if(number==-1){
+            if(mCountQuestionsPerChapter==0) {
+                setmEntry(0);
+            }
+            else if(getmEntry()>0){
+                setmEntry(getmEntry()-1);
+            }
+
+        }
+        if(number==1) {
+            if(mCountQuestionsPerChapter!=0) {
+                setmEntry(getmEntry() + 1);
+            }
+        }
+
+        //find the other fragment and get the method that modifies the views
+//--------------------------------------------------------------------------------------------------
+        if(mQuestionFragment==null){
+
+            mQuestionFragment=new QuestionDisplay();
+            mFmanager=getFragmentManager();
+            mFtransaction=mFmanager.beginTransaction();
+            mFtransaction.disallowAddToBackStack();
+            mFtransaction.replace(R.id.question, mQuestionFragment).commit();
+
+
+        }
+        if (mQuestionFragment != null) {
+            if (mCountQuestionsPerChapter > 0) {
+                mQuestionFragment.setmDataArrayQuestions(QuestionObject.QUESTION_NUMBER.get(
+                        MainActivity.getmEntry()) + ". " +
+                        QuestionObject.QUESTIONS.get(MainActivity.getmEntry()+1));
+            }
+            else {
+                mQuestionFragment.setmDataArrayQuestions("");
+                checkConsistency=1;
+            }
+        }
+
+        else {
+
+            mQuestionFragment=new QuestionDisplay();
+            mFmanager=getFragmentManager();
+            FragmentTransaction newQue=mFmanager.beginTransaction();
+            newQue.disallowAddToBackStack();
+            newQue.add(R.id.question, mQuestionFragment).commit();
+
+        }
+
+
+        //--------------------------------------------------------------------------------------
+        if(checkConsistency==0) {
+
+            if (flag == 0) {
+                if (mRadioFragment == null) {
+                    mRadioFragment = new RadioFragment();
+                    mFmanager = getFragmentManager();
+                    mFtransaction = mFmanager.beginTransaction();
+                    mFtransaction.add(R.id.sharedview, mRadioFragment).commit();
+
+                }
+                if (mRadioFragment.isVisible()) {
+                    RadioButton a = (RadioButton) mRadioFragment.getView().
+                            findViewById(R.id.radoigroup).findViewById(R.id.a);
+                    a.setText("A. " + ChoiceObject.ChoiceA.get(getmEntry()));
+                    RadioButton b = (RadioButton) mRadioFragment.getView().
+                            findViewById(R.id.radoigroup).findViewById(R.id.b);
+                    b.setText("B. " + ChoiceObject.ChoiceB.get(getmEntry()));
+                    RadioButton c = (RadioButton) mRadioFragment.getView().
+                            findViewById(R.id.radoigroup).findViewById(R.id.c);
+                    c.setText("C. " + ChoiceObject.ChoiceC.get(getmEntry()));
+                    RadioButton d = (RadioButton) mRadioFragment.getView().
+                            findViewById(R.id.radoigroup).findViewById(R.id.d);
+                    d.setText("D. " + ChoiceObject.ChoiceD.get(getmEntry()));
+
+                } else {
+
+                    RadioFragment rd = new RadioFragment();
+                    FragmentManager mf = getFragmentManager();
+                    FragmentTransaction newrd = mf.beginTransaction();
+                    newrd.disallowAddToBackStack();
+                    newrd.replace(R.id.sharedview, rd).commit();
+
+
+                }
+            }
+            //------------------------------------------------------------------------------------------
+            else {
+                if (mCheckFragment == null) {
+                    mCheckFragment = new CheckBoxFragment();
+                    mFmanager = getFragmentManager();
+                    mFtransaction = mFmanager.beginTransaction();
+                    mFtransaction.add(R.id.sharedview, mCheckFragment).commit();
+                }
+                if (mCheckFragment.isVisible()) {
+
+                    CheckBox w = (CheckBox) mCheckFragment.getView().
+                            findViewById(R.id.checkgroup).findViewById(R.id.checkBox1);
+                    w.setText("A. " + ChoiceObject.ChoiceA.get(getmEntry()));
+                    CheckBox x = (CheckBox) mCheckFragment.getView().
+                            findViewById(R.id.checkgroup).findViewById(R.id.checkBox2);
+                    x.setText("B. " + ChoiceObject.ChoiceB.get(getmEntry()));
+                    CheckBox y = (CheckBox) mCheckFragment.getView().
+                            findViewById(R.id.checkgroup).findViewById(R.id.checkBox3);
+                    y.setText("C. " + ChoiceObject.ChoiceC.get(getmEntry()));
+                    CheckBox z = (CheckBox) mCheckFragment.getView().
+                            findViewById(R.id.checkgroup).findViewById(R.id.checkBox4);
+                    z.setText("D. " + ChoiceObject.ChoiceD.get(getmEntry()));
+                } else
+
+                {
+                    CheckBoxFragment fr = null;
+                    fr = new CheckBoxFragment();
+                    FragmentManager fmc = getFragmentManager();
+                    FragmentTransaction newtra = fmc.beginTransaction();
+                    newtra.disallowAddToBackStack();
+                    newtra.replace(R.id.sharedview, fr).commit();
+
+
+                }
+            }
+        }
+
+        //-------------------------------------------------------------------------------------
+
+}
+     //---------------------------------------------------------------------------------------------
+
+
+
+
+}
