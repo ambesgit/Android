@@ -1,0 +1,197 @@
+package com.example.ambes.briantest.UI;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Bundle;
+import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.example.ambes.briantest.R;
+import com.example.ambes.briantest.choices.ChoiceObject;
+import com.example.ambes.briantest.questions.QuestionObject;
+import com.example.ambes.briantest.util.ChapterChange;
+import com.example.ambes.briantest.util.CheckTextLength;
+
+public class CheckBoxFragment extends Fragment{
+
+    private Activity context;
+    private OnFragmentInteractionListener mListener;
+    private RadioGroup mRadioGroup;
+    private CheckBox mCheckBox;
+    public static Button mNext;
+    public static Button mPrevious;
+    public static  Button mAnswer;
+    private static  int mConf=0;
+//--------------------------------------------------------------------------------------------------
+    private CheckBox mCheckBoxA;
+    private CheckBox mCheckBoxB;
+    private CheckBox mCheckBoxC;
+    private CheckBox mCheckBopxD;
+
+
+//--------------------------------------------------------------------------------------------------
+    public CheckBoxFragment() {
+        // Required empty public constructor
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+//-------------------------------------------------------------------------------------------------
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        context=activity;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
+            mConf=1;
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_checkbox, container, false);
+        mCheckBoxA = (CheckBox) v.findViewById(R.id.checkBox1);
+        mCheckBoxB = (CheckBox) v.findViewById(R.id.checkBox2);
+        mCheckBoxC = (CheckBox) v.findViewById(R.id.checkBox3);
+        mCheckBopxD = (CheckBox) v.findViewById(R.id.checkBox4);
+        try {
+            if(QuestionObject.QUESTIONS.size()>0) {
+                mCheckBopxD.setText("D. " + ChoiceObject.ChoiceD.get(MainActivity.getmEntry()));
+                mCheckBoxA.setText("A. " + ChoiceObject.ChoiceA.get(MainActivity.getmEntry()));
+                mCheckBoxB.setText("B. " + ChoiceObject.ChoiceB.get(MainActivity.getmEntry()));
+                mCheckBoxC.setText("C. " + ChoiceObject.ChoiceC.get(MainActivity.getmEntry()));
+            }
+            else{
+                mCheckBopxD.setVisibility(View.INVISIBLE);
+                mCheckBoxA.setVisibility(View.INVISIBLE);
+                mCheckBoxB.setVisibility(View.INVISIBLE);
+                mCheckBoxC.setVisibility(View.INVISIBLE);
+                ChapterChange.Enable();
+            }
+             }
+        catch(Exception e){
+
+                mCheckBopxD.setVisibility(View.INVISIBLE);
+                mCheckBoxA.setVisibility(View.INVISIBLE);
+                mCheckBoxB.setVisibility(View.INVISIBLE);
+                mCheckBoxC.setVisibility(View.INVISIBLE);
+                ChapterChange.Enable();
+
+            e.printStackTrace();
+        }
+            mNext = (Button) v.findViewById(R.id.cNext);
+            mPrevious = (Button) v.findViewById(R.id.cPrevious);
+            mAnswer = (Button) v.findViewById(R.id.canswer);
+
+        mAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.mCountQuestionsPerChapter==0){
+                    MainActivity.giveMeCurrentChapter();
+                }
+                mAnswer.setEnabled(false);
+                mAnswer.setClickable(false);
+                //
+                mAnswer.setEnabled(true);
+                mAnswer.setClickable(true);
+            }
+
+        });
+        mNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNext.setEnabled(false);
+                mNext.setClickable(false);
+                if (QuestionObject.QUESTIONS.size() >0) {
+                    if (MainActivity.mCountQuestionsPerChapter == 0) {
+                        MainActivity.giveMeCurrentChapter();
+                    }
+                    if (MainActivity.getmEntry() + 1 < MainActivity.mCountQuestionsPerChapter) {
+                            mListener.getCurrentQuestion(1, QuestionObject.FLAG.get(MainActivity.getmEntry() + 1));
+                        }
+                    else if(MainActivity.getmEntry()==0){
+                        mListener.getCurrentQuestion(1, QuestionObject.FLAG.get(MainActivity.getmEntry()));
+                    }
+
+                    }
+
+                    mNext.setEnabled(true);
+                    mNext.setClickable(true);
+                }
+
+        });
+        mPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MainActivity.mCountQuestionsPerChapter == 0) {
+                    MainActivity.giveMeCurrentChapter();
+                }
+                mPrevious.setEnabled(false);
+                mPrevious.setClickable(false);
+                if(QuestionObject.QUESTIONS.size()>0) {
+
+                        if (MainActivity.getmEntry() - 1 >= 0) {
+                            mListener.getCurrentQuestion(-1, QuestionObject.FLAG.get(MainActivity.getmEntry() - 1));
+                        }
+                        else if(MainActivity.getmEntry()==0){
+                            mListener.getCurrentQuestion(-1, QuestionObject.FLAG.get(MainActivity.getmEntry()));
+                        }
+
+
+                }
+
+                mPrevious.setEnabled(true);
+                mPrevious.setClickable(true);
+
+            }
+        });
+
+        return v;
+    }
+    public  View.OnClickListener setClickButton(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+    }
+//-------------------------------------------------------------------------------------------------
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //has to be created before the mListere is used to pass communication between the frags
+        mListener=(OnFragmentInteractionListener)context;
+
+
+    }
+//-------------------------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------------------------
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction(Uri uri);
+        public void getCurrentQuestion(int number, int frag);
+    }
+//------------------------------------------------------------------------------------------------
+
+}
