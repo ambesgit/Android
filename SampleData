@@ -1,0 +1,467 @@
+package com.example.ambes.briantest.asynchTask;
+
+import java.util.List;
+
+/**
+ * Created by ambes on 7/12/2015.
+ */
+public class InputData {
+
+    public static String [][] question={
+                {
+                        "file name human.java!package myp;package urp; import a; import b; import c;  public class _animal{   }" +
+                                "!public class Human{ String #_name;} !why the code fails to run?",
+                                "final protected class Car{private void callMe(){System.out.println(\"car\");}}" +
+                                        "!public class ford_car extends Car,AnotherClass{" +
+                                        "void callMe(){System.out.println(\"ford\");}}!why the code fails to run",
+                                "package myp; class Parent{public String name=\"java\";}!package urp;public " +
+                                        "class Child extends Parent{public child(){System.out.println(name);}}class App{public static void main(String[ ] args){" +
+                                        "new child();}",
+                                "file Virginia.java !class Virginia{public void callMe(int number){System.out.println(\"703-945-0620\");}}" +
+                                        "public class Alexandria extends Virginia{public void callMe(){System.out.println(\"202-412-1503\");Virginia v=new Virginia();}}" +
+                                        "file App.java" + "!  class App{public static void main(String[] args){Virginia va=new Alexandria();va.callMe();} }" +
+                                        "!what will be the result",
+                                "file Abstracts.java" + "!public class Abstracts{private String myname=\"coolcoo\"; abstract public void getMyName(){};}" +
+                                        "file App.java !  class App{public static void main(String[ ] args){System.out.println(new.Abstracts().myname);}}" +
+                                        "What will be the result",
+                                "abstract class Parent{public static void oops();public void Victim(){System.out.println(\"try your best\");}}" +
+                                        "class Child extends Parent{public static void oops(){int public x=0; int private y=8;}}",
+                                "public abstract interface Flying {public abstract void giveMe();public String takeMe(String where);}" +
+                                        "!interface Runnable implements Flying{void likeThread();}",
+                                "interface Really{public abstract void addNumber(); static final double PI=\"3.141\"; public double getPi(){return PI;}}",
+                                "public final class Animal{public String name=\"pip\";}class Cat extends Animal{" +
+                                        "public void getName(){System.out.println(name);}}",
+                                "package Animal; public class Animal{protected double age=3500000;}package Cat; class Cat extends Animal{" +
+                                        "public void getAge(){System.out.println(new Animal().age);}}",
+                                "package Animal; public class Animal{protected double age; " + "public static void main(String args){}" +
+                                        "public String animalType(){String type; private String name=\"horse\";" +
+                                        "return type;}}class App{ public static void main(String[] args){System.out.println(new Animal().animalType());}}",
+                                "public class Animal{public final volatile String name; public ;public synchronize " +
+                                        "transient void getType(){final volatile int x=0;}}"
+                },
+                {
+                        "public class Parent{public String name=\"parent\";public String getName(){ return name;}}" +
+                        "public class Child extends Parent{public String childName; public void setName(){name=getName();}}" +
+                        "class App{public static void main(String[] args){Parent p=new Child();p.setName();}}",
+                        "file name human.java!package myp;package urp; import a; import b; import c;  public class _animal{   }" +
+                                "!public class Human{ String #_name;} !why the code fails to run?",
+                        "final protected class Car{private void callMe(){System.out.println(\"car\");}}" +
+                                "!public class ford_car extends Car,AnotherClass{" +
+                                "void callMe(){System.out.println(\"ford\");}}!why the code fails to run",
+                        "package myp; class Parent{public String name=\"java\";}!package urp;public " +
+                                "class Child extends Parent{public child(){System.out.println(name);}}class App{public static void main(String[ ] args){" +
+                                "new child();}",
+                        "file Virginia.java !class Virginia{public void callMe(int number){System.out.println(\"703-945-0620\");}}" +
+                                "public class Alexandria extends Virginia{public void callMe(){System.out.println(\"202-412-1503\");Virginia v=new Virginia();}}" +
+                                "file App.java" + "!  class App{public static void main(String[] args){Virginia va=new Alexandria();va.callMe();} }" +
+                                "!what will be the result",
+                        "file Abstracts.java" + "!public class Abstracts{private String myname=\"coolcoo\"; abstract public void getMyName(){};}" +
+                                "file App.java !  class App{public static void main(String[ ] args){System.out.println(new.Abstracts().myname);}}" +
+                                "What will be the result",
+                        "abstract class Parent{public static void oops();public void Victim(){System.out.println(\"try your best\");}}" +
+                                "class Child extends Parent{public static void oops(){int public x=0; int private y=8;}}",
+                        "public abstract interface Flying {public abstract void giveMe();public String takeMe(String where);}" +
+                                "!interface Runnable implements Flying{void likeThread();}",
+                        "interface Really{public abstract void addNumber(); static final double PI=\"3.141\"; public double getPi(){return PI;}}",
+                        "public final class Animal{public String name=\"pip\";}class Cat extends Animal{" +
+                                "public void getName(){System.out.println(name);}}",
+                        "package Animal; public class Animal{protected double age=3500000;}package Cat; class Cat extends Animal{" +
+                                "public void getAge(){System.out.println(new Animal().age);}}",
+                        "package Animal; public class Animal{protected double age; " + "public static void main(String args){}" +
+                                "public String animalType(){String type; private String name=\"horse\";" +
+                                "return type;}}class App{ public static void main(String[] args){System.out.println(new Animal().animalType());}}",
+                        "public class Animal{public final volatile String name; public ;public synchronize " +
+                                "transient void getType(){final volatile int x=0;}}"
+                },
+            {
+                    "file name human.java!package myp;package urp; import a; import b; import c;  public class _animal{   }" +
+                            "!public class Human{ String #_name;} !why the code fails to run?",
+                    "final protected class Car{private void callMe(){System.out.println(\"car\");}}" +
+                            "!public class ford_car extends Car,AnotherClass{" +
+                            "void callMe(){System.out.println(\"ford\");}}!why the code fails to run",
+                    "package myp; class Parent{public String name=\"java\";}!package urp;public " +
+                            "class Child extends Parent{public child(){System.out.println(name);}}class App{public static void main(String[ ] args){" +
+                            "new child();}",
+                    "file Virginia.java !class Virginia{public void callMe(int number){System.out.println(\"703-945-0620\");}}" +
+                            "public class Alexandria extends Virginia{public void callMe(){System.out.println(\"202-412-1503\");Virginia v=new Virginia();}}" +
+                            "file App.java" + "!  class App{public static void main(String[] args){Virginia va=new Alexandria();va.callMe();} }" +
+                            "!what will be the result",
+                    "file Abstracts.java" + "!public class Abstracts{private String myname=\"coolcoo\"; abstract public void getMyName(){};}" +
+                            "file App.java !  class App{public static void main(String[ ] args){System.out.println(new.Abstracts().myname);}}" +
+                            "What will be the result",
+                    "abstract class Parent{public static void oops();public void Victim(){System.out.println(\"try your best\");}}" +
+                            "class Child extends Parent{public static void oops(){int public x=0; int private y=8;}}",
+                    "public abstract interface Flying {public abstract void giveMe();public String takeMe(String where);}" +
+                            "!interface Runnable implements Flying{void likeThread();}",
+                    "interface Really{public abstract void addNumber(); static final double PI=\"3.141\"; public double getPi(){return PI;}}",
+                    "public final class Animal{public String name=\"pip\";}class Cat extends Animal{" +
+                            "public void getName(){System.out.println(name);}}",
+                    "package Animal; public class Animal{protected double age=3500000;}package Cat; class Cat extends Animal{" +
+                            "public void getAge(){System.out.println(new Animal().age);}}",
+                    "package Animal; public class Animal{protected double age; " + "public static void main(String args){}" +
+                            "public String animalType(){String type; private String name=\"horse\";" +
+                            "return type;}}class App{ public static void main(String[] args){System.out.println(new Animal().animalType());}}",
+                    "public class Animal{public final volatile String name; public ;public synchronize " +
+                            "transient void getType(){final volatile int x=0;}}"
+            },
+            {
+                    "public class Parent{public String name=\"parent\";public String getName(){ return name;}}" +
+                            "public class Child extends Parent{public String childName; public void setName(){name=getName();}}" +
+                            "class App{public static void main(String[] args){Parent p=new Child();p.setName();}}",
+                    "file name human.java!package myp;package urp; import a; import b; import c;  public class _animal{   }" +
+                            "!public class Human{ String #_name;} !why the code fails to run?",
+                    "final protected class Car{private void callMe(){System.out.println(\"car\");}}" +
+                            "!public class ford_car extends Car,AnotherClass{" +
+                            "void callMe(){System.out.println(\"ford\");}}!why the code fails to run",
+                    "package myp; class Parent{public String name=\"java\";}!package urp;public " +
+                            "class Child extends Parent{public child(){System.out.println(name);}}class App{public static void main(String[ ] args){" +
+                            "new child();}",
+                    "file Virginia.java !class Virginia{public void callMe(int number){System.out.println(\"703-945-0620\");}}" +
+                            "public class Alexandria extends Virginia{public void callMe(){System.out.println(\"202-412-1503\");Virginia v=new Virginia();}}" +
+                            "file App.java" + "!  class App{public static void main(String[] args){Virginia va=new Alexandria();va.callMe();} }" +
+                            "!what will be the result",
+                    "file Abstracts.java" + "!public class Abstracts{private String myname=\"coolcoo\"; abstract public void getMyName(){};}" +
+                            "file App.java !  class App{public static void main(String[ ] args){System.out.println(new.Abstracts().myname);}}" +
+                            "What will be the result",
+                    "abstract class Parent{public static void oops();public void Victim(){System.out.println(\"try your best\");}}" +
+                            "class Child extends Parent{public static void oops(){int public x=0; int private y=8;}}",
+                    "public abstract interface Flying {public abstract void giveMe();public String takeMe(String where);}" +
+                            "!interface Runnable implements Flying{void likeThread();}",
+                    "interface Really{public abstract void addNumber(); static final double PI=\"3.141\"; public double getPi(){return PI;}}",
+                    "public final class Animal{public String name=\"pip\";}class Cat extends Animal{" +
+                            "public void getName(){System.out.println(name);}}",
+                    "package Animal; public class Animal{protected double age=3500000;}package Cat; class Cat extends Animal{" +
+                            "public void getAge(){System.out.println(new Animal().age);}}",
+                    "package Animal; public class Animal{protected double age; " + "public static void main(String args){}" +
+                            "public String animalType(){String type; private String name=\"horse\";" +
+                            "return type;}}class App{ public static void main(String[] args){System.out.println(new Animal().animalType());}}",
+                    "public class Animal{public final volatile String name; public ;public synchronize " +
+                            "transient void getType(){final volatile int x=0;}}"
+            }
+    };
+    public static int[][] flag={
+                    {1,1,1,0,0,1,1,1,0,0,1,1},
+                    {0,1,1,1,0,0,1,1,1,0,0,1,1},
+                    {1,1,1,0,0,1,1,1,0,0,1,1},
+                    {0,1,1,1,0,0,1,1,1,0,0,1,1}
+
+            };
+    public static int[][] qnum={
+            {1,2,3,4,5,6,7,8,9,10,11,12},
+            {1,1,2,3,4,5,6,7,8,9,10,11,12},
+            {1,2,3,4,5,6,7,8,9,10,11,12},
+            {1,1,2,3,4,5,6,7,8,9,10,11,12}
+    };
+    public static int[][] chap={
+            {1,1,1,1,1,1,1,1,1,1,1,1},
+            {2,2,2,2,2,2,2,2,2,2,2,2,2},
+            {3,3,3,3,3,3,3,3,3,3,3,3},
+            {4,4,4,4,4,4,4,4,4,4,4,4,4}
+    };
+    public static String[][] choiceA={
+            {
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "childName will be set to parent",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "childName will be set to parent",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            }
+
+
+    };
+    public static String[][] choiceB={
+            {
+                    "Because of the import statements",
+                    "Because the subclass more restricts the access modifier of the override method",
+                    "The code will fail at compile time",
+                    "prints 202-412-1503",
+                    "fail during compile time due to the access modifier issue",
+                    "abstract method can't be static",
+                    "the code will spit an error",
+                    "code will fail due to the final member",
+                    "fail during compile time",
+                    "protected members can't be accessed from subclasses",
+                    "Local variables must be instantiated before they are used",
+                    "final members must be instantiated before the constructor run and complete"
+            },
+            {
+                 "fail during compile time",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "Because of the import statements",
+                    "Because the subclass more restricts the access modifier of the override method",
+                    "The code will fail at compile time",
+                    "prints 202-412-1503",
+                    "fail during compile time due to the access modifier issue",
+                    "abstract method can't be static",
+                    "the code will spit an error",
+                    "code will fail due to the final member",
+                    "fail during compile time",
+                    "protected members can't be accessed from subclasses",
+                    "Local variables must be instantiated before they are used",
+                    "final members must be instantiated before the constructor run and complete"
+            },
+            {
+                    "fail during compile time",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            }
+    };
+    public static String[][] choiceC={
+            {
+                    "Because of the identifier in human class",
+                    "Because the ford_car class tries to extend a final class car",
+                    "the code will fail at runtime",
+                    "fails during compile time",
+                    "fail during runtime",
+                    "you can't apply access modifiers for local variables",
+                    "interfaces can't be abstract",
+                    "the member variable must be explicitly declare as public",
+                    "final class can't be extended",
+                    "the protected member must be accessed directly not through reference variable",
+                    "the compiler will spit error because there are two main methods in one app",
+                    "the constructor will assign default value so the instantiation is not a problem "
+            },
+            {
+                    "Run time error",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "Because of the identifier in human class",
+                    "Because the ford_car class tries to extend a final class car",
+                    "the code will fail at runtime",
+                    "fails during compile time",
+                    "fail during runtime",
+                    "you can't apply access modifiers for local variables",
+                    "interfaces can't be abstract",
+                    "the member variable must be explicitly declare as public",
+                    "final class can't be extended",
+                    "the protected member must be accessed directly not through reference variable",
+                    "the compiler will spit error because there are two main methods in one app",
+                    "the constructor will assign default value so the instantiation is not a problem "
+            },
+            {
+                    "Run time error",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            }
+
+    };
+    public static String[][] choiceD={
+            {
+                    "Because of the class access modifiers",
+                    "Multiple inheritance is not allowed in Java",
+                    "the code will fail due to  the class package level  visibility",
+                    "fails during runtime",
+                    "fail due wrong identifier,Abstracts reserved word",
+                    "you can't have concrete method inside abstract class",
+                    "interfaces can't implement an interface",
+                    "the member variable must not be static",
+                    "Name must be accessed using reference variable",
+                    "Class Cat is default so can't extend classes in different package",
+                    "the two main methods are fine as long as they have different signature",
+                    "the final modifier can't be assigned to local variables"
+            },
+            {
+                    "The reference type decides which method to call, not the object type",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            },
+            {
+                    "Because of the class access modifiers",
+                    "Multiple inheritance is not allowed in Java",
+                    "the code will fail due to  the class package level  visibility",
+                    "fails during runtime",
+                    "fail due wrong identifier,Abstracts reserved word",
+                    "you can't have concrete method inside abstract class",
+                    "interfaces can't implement an interface",
+                    "the member variable must not be static",
+                    "Name must be accessed using reference variable",
+                    "Class Cat is default so can't extend classes in different package",
+                    "the two main methods are fine as long as they have different signature",
+                    "the final modifier can't be assigned to local variables"
+            },
+            {
+                    "The reference type decides which method to call, not the object type",
+                    "Because of the package statements",
+                    "Because of wrong protected access modifier in class car",
+                    "the code will compile and prints java",
+                    "prints 703-945-0620",
+                    "coolcoo",
+                    "Abstract class can't be extends",
+                    "the code will run without any error",
+                    "code will fail due to the concrete method",
+                    "prints: pip",
+                    "the code will run fine",
+                    "Local variables can't have access modifiers",
+                    "transient and volatile modifier is only for instant variables"
+            }
+
+    };
+    public static String[][] choiceR={
+                {
+                    "A,C,D",
+                    "A,B,C,D",
+                    "B,D",
+                    "C",
+                    "B",
+                    "B, C",
+                    "B,D",
+                    "A",
+                    "C",
+                    "C",
+                    "A,C,D",
+                    "A,B"
+                },
+                {
+                    "D,B",
+                    "A,C,D",
+                    "A,B,C,D",
+                    "B,D",
+                    "C",
+                    "B",
+                    "B, C",
+                    "B,D",
+                    "A",
+                    "C",
+                    "C",
+                    "A,C,D",
+                    "A,B"
+                 },
+            {
+                    "D,B",
+                    "A,C,D",
+                    "A,B,C,D",
+                    "B,D",
+                    "C",
+                    "B",
+                    "B, C",
+                    "B,D",
+                    "A",
+                    "C",
+                    "C",
+                    "A,C,D",
+                    "A,B"
+            },
+            {
+            "D,B",
+            "A,C,D",
+            "A,B,C,D",
+            "B,D",
+            "C",
+            "B",
+            "B, C",
+            "B,D",
+            "A",
+            "C",
+            "C",
+            "A,C,D",
+            "A,B"
+             }
+
+    };
+        }
