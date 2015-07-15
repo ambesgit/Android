@@ -1,0 +1,221 @@
+package com.example.ambes.briantest.databases;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.ambes.briantest.UI.MainActivity;
+import com.example.ambes.briantest.choices.ChoiceObject;
+import com.example.ambes.briantest.questions.QuestionObject;
+import com.example.ambes.briantest.util.CheckTextLength;
+
+/**
+ * Created by ambes on 7/7/2015.
+ */
+public class BrianTestDatabasWraper {
+    BrianTestDatabase myDatabase;
+    //when instant of this class is created, the database will also created
+    public BrianTestDatabasWraper(Context context){
+        Context con;
+        myDatabase=new BrianTestDatabase(context);
+    }
+
+
+    public int giveMeTableSize(){
+        return myDatabase.TABEL_NAMEC.length();
+    }
+    //----------------------------------------------------------This method will be provided to user
+    public void insertAnswer(String string){
+        if(string.toLowerCase().equals(string.toLowerCase())) {
+            SQLiteDatabase dbs = myDatabase.getWritableDatabase();
+            ContentValues valuesOfQuestion = new ContentValues();
+            valuesOfQuestion.put(BrianTestDatabase.COLUMN_NAMER, string.toLowerCase());
+            long indexQ = dbs.insert(BrianTestDatabase.TABEL_NAMEQ, null, valuesOfQuestion);
+
+        }
+        else{
+
+        }
+    }
+    //---------------------------------------------------------This method is for data insertion
+    //now create your methods to manipulate the table created
+    public long insertData(QuestionObject q,ChoiceObject ch,int pos){
+       SQLiteDatabase dbs=myDatabase.getWritableDatabase();
+        ContentValues valuesOfQuestion=new ContentValues();
+        valuesOfQuestion.put(BrianTestDatabase.COLUMN_NAMEQ,q.QUESTIONS.get(pos));
+        valuesOfQuestion.put(BrianTestDatabase.COLUMN_NAMEF,q.FLAG.get(pos));
+        valuesOfQuestion.put(BrianTestDatabase.COLUMN_NAMECHP,q.CHAPTER.get(pos));
+        valuesOfQuestion.put(BrianTestDatabase.COMMON_COLUMN,q.QUESTION_NUMBER.get(pos));
+        long indexQ=dbs.insert(BrianTestDatabase.TABEL_NAMEQ,null,valuesOfQuestion);
+        ContentValues valuesOfChoices=new ContentValues();
+        valuesOfChoices.put(BrianTestDatabase.COLUMN_NAMEA,ch.ChoiceA.get(pos));
+        valuesOfChoices.put(BrianTestDatabase.COLUMN_NAMEB,ch.ChoiceB.get(pos));
+        valuesOfChoices.put(BrianTestDatabase.COLUMN_NAMEC,ch.ChoiceC.get(pos));
+        valuesOfChoices.put(BrianTestDatabase.COLUMN_NAMED,ch.ChoiceD.get(pos));
+        valuesOfChoices.put(BrianTestDatabase.COLUMN_NAMER,ch.ChoiceR.get(pos));
+        valuesOfChoices.put(BrianTestDatabase.COMMON_COLUMN,ch.Choice_Number.get(pos));
+        long indexC=dbs.insert(BrianTestDatabase.TABEL_NAMEC,null,valuesOfChoices);
+        return indexQ;
+    }
+    //---------------------------------------------------------This method is for data retrieve
+    public void getAllData(){
+        //put all columns in an array so it will be easy to the array object as input
+        String[] questions={
+                BrianTestDatabase.COLUMN_NAMEQ,
+                BrianTestDatabase.COLUMN_NAMECHP,
+                BrianTestDatabase.COLUMN_NAMEF,
+                BrianTestDatabase.COMMON_COLUMN};
+        //put all columns in an array so it will be easy to the array object as input
+        String[] choice={
+                BrianTestDatabase.COLUMN_NAMEA,
+                BrianTestDatabase.COLUMN_NAMEB,
+                BrianTestDatabase.COLUMN_NAMEC,
+                BrianTestDatabase.COLUMN_NAMED,
+                BrianTestDatabase.COLUMN_NAMER,
+                BrianTestDatabase.COMMON_COLUMN};
+        SQLiteDatabase db=myDatabase.getWritableDatabase();
+        Cursor cursorQuestions=db.query(true, BrianTestDatabase.TABEL_NAMEQ, questions,
+                BrianTestDatabase.COLUMN_NAMECHP + "==" + MainActivity.getCurrentChapter(),
+                null, null,null,null,null);
+        Cursor cursorChoices=db.query(true,BrianTestDatabase.TABEL_NAMEC,choice,
+               null,null,null,null,null,null);
+        //---------------------------------------------get all the questions from the question table
+        if(BrianTestDatabase.TABEL_NAMEQ.length()>0) {
+            QuestionObject obj = MainActivity.getQuestionsFromDatabase();
+            if(obj.QUESTIONS.size()>0) {
+                obj.QUESTIONS.clear();
+                obj.FLAG.clear();
+                obj.CHAPTER.clear();
+                obj.QUESTION_NUMBER.clear();
+            }
+            while (cursorQuestions.moveToNext()) {
+                //get the column index to get the position of the UID column
+                int questionsIndex = cursorQuestions.getColumnIndex(BrianTestDatabase.COLUMN_NAMEQ);
+                int chapterIndex = cursorQuestions.getColumnIndex(BrianTestDatabase.COLUMN_NAMECHP);
+                int flagIndex = cursorQuestions.getColumnIndex(BrianTestDatabase.COLUMN_NAMEF);
+                int qNumberIndex = cursorQuestions.getColumnIndex(BrianTestDatabase.COMMON_COLUMN);
+
+                //------------------------------------------------------------------------------
+
+                String questionColumn = cursorQuestions.getString(questionsIndex);
+                int chapterColumn = cursorQuestions.getInt(chapterIndex);
+                int questionNumber = cursorQuestions.getInt(qNumberIndex);
+                int flagColumn = cursorQuestions.getInt(flagIndex);
+
+                //---------------------------------------------------------------------------------
+                obj.QUESTIONS.add(CheckTextLength.processString(questionColumn,MainActivity.mConf));
+                obj.FLAG.add(flagColumn);
+                obj.CHAPTER.add(chapterColumn);
+                obj.QUESTION_NUMBER.add(questionNumber);
+
+            }
+        }
+        //-------------------------------------Get all the choices from the choice table
+        if(BrianTestDatabase.TABEL_NAMEC.length()>0) {
+            ChoiceObject cObj = MainActivity.getChoicesFromDatabase();
+            if(cObj.ChoiceA.size()>0) {
+                cObj.ChoiceA.clear();
+                cObj.ChoiceB.clear();
+                cObj.ChoiceC.clear();
+                cObj.ChoiceD.clear();
+                cObj.ChoiceR.clear();
+                cObj.Choice_Number.clear();
+            }
+
+            while (cursorChoices.moveToNext()) {
+
+                int colAIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COLUMN_NAMEA);
+                int colBIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COLUMN_NAMEB);
+                int colCIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COLUMN_NAMEC);
+                int colDIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COLUMN_NAMED);
+                int colRIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COLUMN_NAMER);
+                int colNIndex = cursorChoices.getColumnIndex(BrianTestDatabase.COMMON_COLUMN);
+                //-----------------------------------------------------------------------------
+
+                String colA = cursorChoices.getString(colAIndex);
+                String colB = cursorChoices.getString(colBIndex);
+                String colC = cursorChoices.getString(colCIndex);
+                String colD = cursorChoices.getString(colDIndex);
+                String colR = cursorChoices.getString(colRIndex);
+                int colN = cursorChoices.getInt(colNIndex);
+                //--------------------------------------------------------------------------------
+
+                cObj.ChoiceA.add(colA);
+                cObj.ChoiceB.add(colB);
+                cObj.ChoiceC.add(colC);
+                cObj.ChoiceD.add(colD);
+                cObj.ChoiceR.add(colR);
+                cObj.Choice_Number.add(colN);
+            }
+        }
+    }
+    //----------------------------------------------------------
+    static class BrianTestDatabase extends SQLiteOpenHelper {
+        private static final String DATABASE_NAME = "briantest";
+        private static final int DATABASE_VERSION =35;
+        //------------------------------------------------------
+        private static final String TABEL_NAMEQ = "question";
+        private static final String COLUMN_NAMEQ="questions";
+        private static final String COLUMN_NAMEF = "flag";
+        private static final String COLUMN_NAMECHP = "chapter";
+        private static final String UID = "_id";
+        //----------------------------------------------
+        private static final String TABEL_NAMEC ="choose";
+        private static final String COLUMN_NAMEA = "a";
+        private static final String COLUMN_NAMEB = "b";
+        private static final String COLUMN_NAMEC = "c";
+        private static final String COLUMN_NAMED = "d";
+        private static final String COLUMN_NAMER = "r";
+        private static final String UIDC ="_id";
+        //-------------------------------------------------This column is common to both table
+        private static final String COMMON_COLUMN="qNumber";
+        private static final String CREATE_TABLEQ = "CREATE TABLE" + " " +
+                TABEL_NAMEQ + "(" +
+                UID  + " "+"INTEGER PRIMARY KEY autoincrement," +" "+
+                COMMON_COLUMN+" "+"INTEGER,"+ " " +
+                COLUMN_NAMEQ + " " + "VARCHAR," + " " +
+                COLUMN_NAMECHP + " " + "INTEGER,"+
+                COLUMN_NAMEF + " " + "INTEGER);";
+        private static final String CREATE_TABLEC="CREATE TABLE" + " " +
+                TABEL_NAMEC + "(" +
+                UIDC + " " +"INTEGER PRIMARY KEY autoincrement," + " " +
+                COMMON_COLUMN+" "+"INTEGER,"+" "+
+                COLUMN_NAMEA + "" + " VARCHAR,"+
+                COLUMN_NAMEB + "" + " VARCHAR,"+ " " +
+                COLUMN_NAMEC + " " + " VARCHAR," + " " +
+                COLUMN_NAMED + " " +"VARCHAR,"+
+                COLUMN_NAMER + " " + " VARCHAR);";
+
+
+        //--------------------------------------------------------------------------
+        public BrianTestDatabase(Context context) {
+            //null, no custom cursor require
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+
+        }
+
+        //---------------------------------------------------------------------------
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            //when you create the new object of the BrianTestDatabase, it will create the database named
+            //by the name you provided in the constructor and pass it to this onCreate method so you can
+            //provided sql statement to the execSQL method
+            db.execSQL(CREATE_TABLEC);
+            db.execSQL(CREATE_TABLEQ);
+
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            //if your version is changed you this will run and drop the database
+            db.execSQL("DROP TABLE IF EXISTS"+" "+TABEL_NAMEQ);
+            db.execSQL("DROP TABLE IF EXISTS"+" "+TABEL_NAMEC);
+            db.execSQL(CREATE_TABLEC);
+            db.execSQL(CREATE_TABLEQ);
+
+        }
+    }
+}
